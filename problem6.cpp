@@ -7,18 +7,27 @@ using namespace std;
 int main(){
     int a;
     cin >>a;
+    vector <int> l;
     vector <int> v;
     for (int i = 0; i < a; ++i) {
         int y;
         cin>>y;
         v.push_back(y);
     }
-    if (a==5){
-        cout<<"8 1 2 2 3";
-    }
-    else{
-        cout<<"0 0 3 0";
-    }
+    int count;
+    for (int i :v) {
+        for (int j :v) {
+            if (i>j){
+                count++;
+            }
+        }
+        l.push_back(count);
+        count=0;
 
+
+    }
+    for(int p :l){
+        cout<<p<<" ";
+    }
 
 }
