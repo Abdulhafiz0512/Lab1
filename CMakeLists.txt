@@ -7,3 +7,4 @@ add_executable(something problem2.cpp)
 add_executable(someting problem4.cpp)
 
 add_executable(aloo problem5.cpp)
+add_executable(njnjn problem6.cpp)
