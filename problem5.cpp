@@ -22,7 +22,7 @@ int il=0;
         il++;
         if (item==i){
             con= true;
-            cout<<il;
+            cout<<il-1;
             break;
         }
     }
