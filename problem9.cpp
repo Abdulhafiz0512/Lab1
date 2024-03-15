@@ -28,7 +28,7 @@ int main(){
 
     }
     if (item==item0){
-        cout<<index-1;
+        cout<<index+1;
     }
     else{
         cout<<index;
