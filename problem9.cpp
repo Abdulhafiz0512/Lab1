@@ -17,6 +17,7 @@ int main(){
         sum=0;
     }
     int item=arr[1];
+    int item0=arr[0];
     sort(arr, arr+a,greater<int>());
     int index=0;
     for (int o :arr){
@@ -26,6 +27,12 @@ int main(){
         }
 
     }
-    cout<<index;
+    if (item==item0){
+        cout<<index-1;
+    }
+    else{
+        cout<<index;
+    }
+
 
 }
