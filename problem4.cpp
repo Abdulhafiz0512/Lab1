@@ -1,23 +1,80 @@
 #include <iostream>
 using namespace std;
-int main(){
-    int a;
-    cin >>a;
-    for(int i=0; a > i; i++){
-        for (int j = 0; j < a-i; ++j) {
-            cout<<"*";
-        }
-        cout<<endl;
+
+class Node {
+public:
+    int data;
+    Node* next;
+
+    Node(int data) {
+        this->data = data;
+        this->next = nullptr;
     }
-    for(int u=0; u<a; u++){
-        for (int h = 0; h < a; ++h) {
-            cout<<"*";
-        }
-        cout<<endl;
+};
+
+class LinkedList {
+private:
+    Node* head;
+public:
+    LinkedList() {
+        head = nullptr;
     }
-    cout<<a*a;
+
+    void insert(int data) {
+        Node* newNode = new Node(data);
+        if (head == nullptr) {
+            head = newNode;
+        } else {
+            Node* temp = head;
+            while (temp->next != nullptr) {
+                temp = temp->next;
+            }
+            temp->next = newNode;
+        }
+    }
+
+    void display() {
+        Node* temp = head;
+        while (temp != nullptr) {
+            cout << temp->data << " ";
+            temp = temp->next;
+        }
+        cout << endl;
+    }
+
+    void sortAscending() {
+        if (head == nullptr || head->next == nullptr) {
+            return;
+        }
+
+        Node* current = head;
+        while (current != nullptr) {
+            Node* index = current->next;
+            while (index != nullptr) {
+                if (current->data > index->data) {
+                    int temp = current->data;
+                    current->data = index->data;
+                    index->data = temp;
+                }
+                index = index->next;
+            }
+            current = current->next;
+        }
+    }
+};
+
+int main() {
+    LinkedList list;
+    int n, data;
+    cin >> n;
+    for (int i = 0; i < n; ++i) {
+        cin >> data;
+        list.insert(data);
+    }
+
+    list.display();
+    list.sortAscending();
+    list.display();
+
     return 0;
-
-
-
 }
