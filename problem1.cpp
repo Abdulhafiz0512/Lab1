@@ -1,90 +1,55 @@
-#include  <iostream>
-
+#include<bits/stdc++.h>
 using namespace std;
 
-class Leaf{
-public:
-    string msg;
-    Leaf(string msg){
-        this->msg=msg;
+void heapify(int arr[], int n, int i){
+    int largest = i;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
+
+    if (l < n && arr[l] > arr[largest])
+        largest = l;
+    if (r < n && arr[r] > arr[largest])
+        largest = r;
+
+    if (largest != i) {
+        swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);
     }
-};
-class Node{
-public:
-    int value;
-    Node *left;
-    Node *right;
-    Leaf *leftL;
-    Leaf *rightL;
-    Node(int val){
-        value=val;
-        left=NULL;
-        right=NULL;
-        leftL=NULL;
-        rightL=NULL;
+}
+
+void heapSort(int arr[], int n){
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+    for (int i = n - 1; i >= 0; i--) {
+        swap(arr[0], arr[i]);
+        heapify(arr, i, 0);
     }
-};
+}
 
+int main(){
+  int n;
+  cin >> n;
+  int sz1 = (n+1)/2, sz = n/2;
+  int a[sz1], b[sz];
+  for(int i = 0; i < sz; i ++){
+    cin >> a[i] >> b[i];
+  }
+  if(sz1!=sz) cin >> a[sz];
+  for(int i = sz1/2-1; i >= 0; i--){
+      heapify(a, sz1, i);
+  }
+  heapSort(a, sz1);
+  for(int i = sz/2-1;i >= 0; i--){
+      heapify(b, sz, i);
+  }
+  heapSort(b, sz);
+  for(int i = 0; i < sz1/2; i++){
+    swap(a[i], a[sz1-1-i]);
+  }
+  for(int i = 0; i < sz; i++){
+    cout << a[i] << ' ' << b[i] << ' ';
+  }
+  if(sz1!=sz) cout << a[sz];
 
-int main() {
-    Node *root = new Node(80);
-
-
-    Node *left54 = new Node(54);
-    root->left=left54;
-    Node * right60 = new Node(60);
-    Node *left49 = new Node(49);
-    Leaf *leafFlower = new Leaf("Flower");
-    Leaf *leaf55 = new Leaf("55");
-    Leaf *leafHappy = new Leaf("Happy");
-    Leaf *leafVictory = new Leaf("Victory");
-    left54 ->right=right60;
-    left54 -> left = left49;
-    right60 ->rightL=leafFlower;
-    right60 -> leftL = leaf55;
-    left49 ->rightL =leafHappy;
-    left49 -> leftL =leafVictory;
-
-
-    Node *right140 = new Node(140);
-    root ->right=right140;
-    Leaf *leafNet = new Leaf("Net");
-    right140->rightL=leafNet;
-    Node *left104 = new Node(104);
-    right140->left=left104;
-    Leaf *leafVision = new Leaf("Vision");
-    left104->rightL = leafVision;
-    Leaf *leafPower = new Leaf("Power");
-    left104->leftL = leafPower;
-
-    int val;
-    cin>> val;
-    bool check = false;
-    Node *tmp =root;
-    while (!check) {
-
-        if (val > tmp->value) {
-            if (tmp-> right == NULL) {
-                cout << tmp->rightL->msg;
-                check = 1;
-                break;
-            }
-            tmp= tmp->right;
-        }
-        else {
-            if (tmp -> left== NULL) {
-                cout << tmp->leftL ->msg;
-                check=1;
-                break;
-            }
-            tmp= tmp->left;
-
-        }
-    }
-
-
-
-
-
-    return 0;
+  return 0;
 }

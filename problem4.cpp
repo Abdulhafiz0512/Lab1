@@ -1,80 +1,50 @@
-#include <iostream>
+#include<bits/stdc++.h>
 using namespace std;
 
-class Node {
-public:
-    int data;
-    Node* next;
+void heapify(long long arr[], int n, int i){
+    int largest = i;
+    int l = 2 * i + 1;
+    int r = 2 * i + 2;
 
-    Node(int data) {
-        this->data = data;
-        this->next = nullptr;
+    if (l < n && arr[l] > arr[largest])
+        largest = l;
+    if (r < n && arr[r] > arr[largest])
+        largest = r;
+
+    if (largest != i) {
+        swap(arr[i], arr[largest]);
+        heapify(arr, n, largest);
     }
-};
+}
 
-class LinkedList {
-private:
-    Node* head;
-public:
-    LinkedList() {
-        head = nullptr;
+void heapSort(long long arr[], int n){
+    for (int i = n / 2 - 1; i >= 0; i--)
+        heapify(arr, n, i);
+    for (int i = n - 1; i >= 0; i--) {
+        swap(arr[0], arr[i]);
+        heapify(arr, i, 0);
     }
+}
 
-    void insert(int data) {
-        Node* newNode = new Node(data);
-        if (head == nullptr) {
-            head = newNode;
-        } else {
-            Node* temp = head;
-            while (temp->next != nullptr) {
-                temp = temp->next;
-            }
-            temp->next = newNode;
-        }
-    }
-
-    void display() {
-        Node* temp = head;
-        while (temp != nullptr) {
-            cout << temp->data << " ";
-            temp = temp->next;
-        }
-        cout << endl;
-    }
-
-    void sortAscending() {
-        if (head == nullptr || head->next == nullptr) {
-            return;
-        }
-
-        Node* current = head;
-        while (current != nullptr) {
-            Node* index = current->next;
-            while (index != nullptr) {
-                if (current->data > index->data) {
-                    int temp = current->data;
-                    current->data = index->data;
-                    index->data = temp;
-                }
-                index = index->next;
-            }
-            current = current->next;
-        }
-    }
-};
-
-int main() {
-    LinkedList list;
-    int n, data;
+int main(){
+    int n;
     cin >> n;
-    for (int i = 0; i < n; ++i) {
-        cin >> data;
-        list.insert(data);
+    long long arr[n];
+    for(int i = 0; i < n; i++){
+        cin >> arr[i];
     }
-
-    list.display();
-    list.sortAscending();
-    list.display();
-
+    for(int i = n/2-1; i >= 0; i--){
+        heapify(arr, n, i);
+    }
+    heapSort(arr, n);
+    long long mn = INT_MAX;
+    for(int i = 1; i < n; i++){
+        mn = min(mn, arr[i] - arr[i-1]);
+    }
+    for(int i = 1; i < n; i++){
+        if(arr[i] - arr[i-1] == mn){
+            cout << arr[i - 1] << " " << arr[i] << endl;
+        }
+    }
     return 0;
 }
