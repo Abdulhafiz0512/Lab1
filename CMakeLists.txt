@@ -3,9 +3,5 @@ project(untitled5)
 
 set(CMAKE_CXX_STANDARD 17)
 
-add_executable(something problem2.cpp)
-add_executable(someting problem4.cpp)
-
-add_executable(ajsdjad problem3.cpp)
 
 add_executable(jdjfiojf problem1.cpp)
