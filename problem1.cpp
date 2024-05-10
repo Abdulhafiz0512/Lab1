@@ -1,211 +1,155 @@
-
 #include <iostream>
-#include <queue>
 using namespace std;
 
 class Node {
 public:
     int key;
-    Node* left;
-    Node* right;
+    Node *left;
+    Node *right;
     int height;
-
-    Node(int k) : key(k), left(nullptr), right(nullptr), height(1) {}
 };
-
-class AVLTree {
-public:
-    Node* root;
-
-    AVLTree() : root(nullptr) {}
-
-    Node* insert(Node* root, int key) {
-        if (!root) {
-            return new Node(key);
-        } else if (key < root->key) {
-            root->left = insert(root->left, key);
-        } else {
-            root->right = insert(root->right, key);
-        }
-
-        root->height = 1 + max(getHeight(root->left), getHeight(root->right));
-
-        int balance = getBalance(root);
-
-        if (balance > 1 && key < root->left->key) {
-            return rotateRight(root);
-        }
-
-        if (balance < -1 && key > root->right->key) {
-            return rotateLeft(root);
-        }
-
-        if (balance > 1 && key > root->left->key) {
-            root->left = rotateLeft(root->left);
-            return rotateRight(root);
-        }
-
-        if (balance < -1 && key < root->right->key) {
-            root->right = rotateRight(root->right);
-            return rotateLeft(root);
-        }
-
-        return root;
+int height(Node *node){
+    if(node==NULL) return 0;
+    return node->height;
+}
+int getBalanceFactor(Node *node){
+    if(node==NULL) return 0;
+    return height(node->left)- height(node->right);
+}
+Node *newNode(int key){
+    Node *node=new Node();
+    node->key=key;
+    node->left=NULL;
+    node->right=NULL;
+    node->height=1;
+    return node;
+}
+Node *rotateRight(Node *x){
+    Node *y=x->left;
+    Node *t=y->right;
+    y->right=x;
+    x->left=t;
+    x->height=max(height(x->right), height(x->left))+1;
+    y->height=max(height(y->right), height(y->left))+1;
+    return y;
+}
+Node *rotateLeft(Node *y){
+    Node *x=y->right;
+    Node *t=x->left;
+    x->left=y;
+    y->right=t;
+    y->height=max(height(y->left), height(y->right))+1;
+    x->height=max(height(x->left), height(x->right))+1;
+    return x;
+}
+Node *insertNode(Node *node, int key){
+    if(node==NULL){
+        return newNode(key);
     }
+    if(key<node->key){
+        node->left= insertNode(node->left,key);
+    }else if(key>node->key){
+        node->right= insertNode(node->right,key);
 
-    Node* deleteNode(Node* root, int key) {
-        if (!root) {
-            return root;
-        }
-
-        if (key < root->key) {
-            root->left = deleteNode(root->left, key);
-        } else if (key > root->key) {
-            root->right = deleteNode(root->right, key);
-        } else {
-            if (!root->left || !root->right) {
-                Node* temp = root->left ? root->left : root->right;
-                if (!temp) {
-                    temp = root;
-                    root = nullptr;
-                } else {
-                    *root = *temp;
-                }
-                delete temp;
-            } else {
-                Node* temp = getMinValueNode(root->right);
-                root->key = temp->key;
-                root->right = deleteNode(root->right, temp->key);
-            }
-        }
-
-        if (!root) {
-            return root;
-        }
-
-        root->height = 1 + max(getHeight(root->left), getHeight(root->right));
-
-        int balance = getBalance(root);
-
-        if (balance > 1 && getBalance(root->left) >= 0) {
-            return rotateRight(root);
-        }
-
-        if (balance < -1 && getBalance(root->right) <= 0) {
-            return rotateLeft(root);
-        }
-
-        if (balance > 1 && getBalance(root->left) < 0) {
-            root->left = rotateLeft(root->left);
-            return rotateRight(root);
-        }
-
-        if (balance < -1 && getBalance(root->right) > 0) {
-            root->right = rotateRight(root->right);
-            return rotateLeft(root);
-        }
-
-        return root;
+    }else{
+        return node;
     }
-
-    int getHeight(Node* node) {
-        if (!node) {
-            return 0;
-        }
-        return node->height;
-    }
-
-    int getBalance(Node* node) {
-        if (!node) {
-            return 0;
-        }
-        return getHeight(node->left) - getHeight(node->right);
-    }
-
-    Node* rotateRight(Node* z) {
-        Node* y = z->left;
-        Node* T = y->right;
-
-        y->right = z;
-        z->left = T;
-
-        z->height = 1 + max(getHeight(z->left), getHeight(z->right));
-        y->height = 1 + max(getHeight(y->left), getHeight(y->right));
-
-        return y;
-    }
-
-    Node* rotateLeft(Node* z) {
-        Node* y = z->right;
-        Node* T = y->left;
-
-        y->left = z;
-        z->right = T;
-
-        z->height = 1 + max(getHeight(z->left), getHeight(z->right));
-        y->height = 1 + max(getHeight(y->left), getHeight(y->right));
-
-        return y;
-    }
-
-    Node* getMinValueNode(Node* node) {
-        Node*
-current = node;
-        while (current && current->left) {
-            current = current->left;
-        }
-        return current;
-    }
-
-    void levelOrderTraversal(Node* root) {
-        queue<Node*> q;
-        
-        if (!root) {
-            return;
-        }
-        
-        q.push(root);
-        
-        while (!q.empty()) {
-            Node* node = q.front();
-            q.pop();
-            
-            cout << node->key << " ";
-            
-            if (node->left) {
-                q.push(node->left);
-            }
-            
-            if (node->right) {
-                q.push(node->right);
-            }
+    node->height=1+max(height(node->left), height(node->right));
+    int balanceFactor= getBalanceFactor(node);
+    if(balanceFactor>1){
+        if(key<node->left->key){
+            return rotateRight(node);
+        }else if(key>node->left->key){
+            node->left= rotateLeft(node->left);
+            return rotateRight(node);
         }
     }
-};
+    if(balanceFactor<-1){
+        if(key<node->right->key){
+            node->right= rotateRight(node->right);
+            return rotateLeft(node);
+        }else if(key>node->right->key){
+            return rotateLeft(node);
+        }
+    }
+    return node;
+}
+Node *nodeWithMimumValue(Node *node) {
+    Node *current = node;
+    while (current->left != NULL)
+        current = current->left;
+    return current;
+}
+Node *deleteNode(Node *node, int key){
+    if(node==NULL){
+        return node;
+    }
+    if(key<node->key){
+        node->left= deleteNode(node->left,key);
+    }else if(key>node->key){
+        node->right= deleteNode(node->right,key);
+    }else{
+        if(node->right==NULL||node->left==NULL){
+            Node* temp=node->left?node->left:node->right;
+            if(temp==NULL){
+                temp=node;
+                node=NULL;
+            }else{
+                *node=*temp;}
+            free(temp);
+        }else{
+            Node *temp = nodeWithMimumValue(node->right);
+            node->key = temp->key;
+            node->right = deleteNode(node->right,
+                                     temp->key);
+        }
+    }
+    if (node==NULL){
+        return node;
+    }
+    node->height=1+max(height(node->left), height(node->right));
+    int balanceFactor= getBalanceFactor(node);
+    if(balanceFactor>1){
+        if(getBalanceFactor(node->left)>=0){
+            return rotateRight(node);
+        }else{
+            node->left= rotateLeft(node->left);
+            return rotateRight(node);
+        }
+    }
+    if(balanceFactor<-1){
+        if(getBalanceFactor(node->right)<=0){
+            return rotateLeft(node);
+        }else{
+            node->right= rotateRight(node->right);
+            return rotateLeft(node);
+        }
+    }
+    return node;
+}
+void printTree(Node *root) {
+    if (root != nullptr) {
+        cout << root->key <<" ";
+        printTree(root->left);
+        printTree(root->right);
+    }
+}
 
 int main() {
-    AVLTree avlTree;
-
-    int n, element, valueToDelete;
-
-    cout << "Enter the number of elements to insert: ";
+    Node *root = NULL;
+    int n;
     cin >> n;
-
-    cout << "Enter the elements:" << endl;
-    for (int i = 0; i < n; i++) {
-        cin >> element;
-        avlTree.root = avlTree.insert(avlTree.root, element);
+    int temp;
+    for (int i = 0; i < n; ++i) {
+        cin >> temp;
+        root = insertNode(root,temp);
     }
-
-    cout << "Enter the value to delete: ";
-    cin >> valueToDelete;
-
-    avlTree.root = avlTree.deleteNode(avlTree.root, valueToDelete);
-
-    
-    avlTree.levelOrderTraversal(avlTree.root);
-
+    int garbage;
+    cin >> garbage;
+    deleteNode(root,garbage);
+    printTree(root);
     return 0;
 }
+
 
 
